@@ -129,8 +129,9 @@ var infobox = (function(){
 		else {
 		 	for (var key in d.properties){
 		 		var new_info_row = info_table.append("tr");
-	 			new_info_row.append("td").text(key);
-	 			new_info_row.append("td").text(d.properties[key]);
+				new_info_row.append("td").text(key);
+				console.log(d.properties[key]); 
+	 			new_info_row.append("td").text(d.properties[key].summary);
 	 			new_info_row.append("td").text("")
 			}
 		}

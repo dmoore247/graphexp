@@ -15,9 +15,21 @@
 
 <script src="http://d3js.org/d3.v4.min.js"></script>
 <!--<script src="d3/d3.min.js"></script>-->
+
+<!-- vsjs.org network with font based icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<!-- 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+-->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+
 <script src="scripts/graphConf.js"></script>
 <script src="scripts/graphShapes.js"></script>
 <script src="scripts/infobox.js"></script>
+<script src="scripts/graphOptions.js"></script>
+<script src="scripts/graphData.js"></script>
 <script src="scripts/graph_viz.js"></script>
 <script src="scripts/graphioGremlin.js"></script>
 
@@ -25,7 +37,7 @@
 
 	///////////////////////////////////////////////
 	function search_query(){
-		//if (typeof graph_viz.simulation!=='undefined') {graph_viz.simulation.stop(); console.log('Simulation stopped!');}
+		graph_data.clear();
 		graphioGremlin.search_query();
 	}
 
@@ -99,13 +111,13 @@
 					</div>
 				</div>
 				<div class="nav controls">
-					<button name="clear" onclick="graph_viz.clear();">Clear</button>
+					<button name="clear" onclick="clear_graph()">Clear</button>
+					<button name="cluster" onclick="cluster_graph()">Cluster</button>
 				</div>
 			</div>
 		</div>
 		<div class="content">
 				<div class="main" id="main">
-					<svg></svg>
 				</div>
 
 				<div class="aside left_bar" style="background-color:transparent;pointer-events:auto;">
@@ -161,11 +173,12 @@
 		<script type="text/javascript">
 
 			init_property_bar();
+			graph_data.init();
 			// Create the graph canvas in the chosen div element
-			graph_viz.init("#main");
+			graph_viz.init("main");
 			// Add the zoom layer to the graph
 			//var svg_graph = 
-			graph_viz.addzoom();
+			// graph_viz.addzoom();
 			//graph_viz.layers.set_nb_layers(4);
 
 			// Create the info box for node details
@@ -174,6 +187,19 @@
 			//console.log(graph_viz.graph_events.ev);
 			//graph_viz.graph_events.test();
 
+			// dependency injection
+			graphioGremlin.init(graph_viz.refresh_data);
+
+
+	function clear_graph() {
+		console.log("clear");
+		graph_data.clear();
+		graph_viz.clear();
+	}
+
+	function cluster_graph() {
+		graph_viz.cluster();
+	}
 
 	function init_property_bar(){
 		document.getElementById('nbLayers').value = default_nb_of_layers;

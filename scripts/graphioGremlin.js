@@ -21,7 +21,11 @@ var graphioGremlin = (function(){
 
 	var _node_properties = [];
 	var _edge_properties = [];
+	var _referesh_data_function;
 
+	function init(refresh_data_function) {
+		_referesh_data_function = refresh_data_function;
+	}
 
 	function get_node_properties(){
 		return _node_properties;
@@ -324,7 +328,7 @@ var graphioGremlin = (function(){
 			if (query_type=='click') var center_f = 0; //center_f=0 mean no attraction to the center for the nodes 
 			else if (query_type=='search') var center_f = 1;
 			else return;
-			graph_viz.refresh_data(graph,center_f,active_node);
+			_referesh_data_function(graph,center_f,active_node);
 		}
 
 		$('#outputArea').html(message);
@@ -365,35 +369,35 @@ var graphioGremlin = (function(){
 	function arrange_datav2(data) {
 		// Extract node and edges from the data returned for 'search' and 'click' request
 		// Create the graph object
-		var nodes=[], links=[];
+		var nodes=[], edges=[];
 		for (var key in data){
 			data[key].forEach(function (item) {
 			if (item.type=="vertex" && idIndex(nodes,item.id) == null) // if vertex and not already in the list
 				nodes.push(extract_infov2(item));
-			if (item.type=="edge" && idIndex(links,item.id) == null)
-				links.push(extract_infov2(item));
+			if (item.type=="edge" && idIndex(edges,item.id) == null)
+				edges.push(extract_infov2(item));
 			});
 		}
-	  return {nodes:nodes, links:links};
+	  return {nodes:nodes, edges:edges};
 	}
 
 	function arrange_datav3(data) {
 		// Extract node and edges from the data returned for 'search' and 'click' request
 		// Create the graph object
-		var nodes=[], links=[];
+		var nodes=[], edges=[];
 		for (var key in data){
 			data[key].forEach(function (item) {
 				if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
 					item.type = "vertex";
 					nodes.push(extract_infov3(item));
 				}
-				if (("inV" in item) && idIndex(links,item.id) == null){
+				if (("inV" in item) && idIndex(edges,item.id) == null){
 					item.type = "edge";
-					links.push(extract_infov3(item));
+					edges.push(extract_infov3(item));
 				}
 			});
 		}
-	  return {nodes:nodes, links:links};
+	  return {nodes:nodes, edges:edges};
 	}
 
 
@@ -488,6 +492,7 @@ function get_vertex_prop_in_list(vertexProperty){
 	}
 
 	return {
+		init: init,
 		get_node_properties : get_node_properties,
 		get_edge_properties : get_edge_properties,
 		get_graph_info : get_graph_info,
