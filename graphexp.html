@@ -1,375 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Graphexp, graph explorer</title>
+
 <head>
-<link rel="stylesheet" href="css/graphStyle.css">
-<link rel="stylesheet" href="css/styles.css">
-<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">-->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Graphexp, graph explorer</title>
+	<link rel="stylesheet" href="css/graphStyle.css">
+	<link rel="stylesheet" href="css/styles.css">
 
-<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-<!--<script src="jquery-3.2.1.min.js"></script>-->
+	<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-<script src="http://d3js.org/d3.v4.min.js"></script>
-<!--<script src="d3/d3.min.js"></script>-->
+	<script src="http://d3js.org/d3.v4.min.js"></script>
 
-<!-- vsjs.org network with font based icons -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-<!-- 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
--->
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
-<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+	<!-- vsjs.org network with font based icons -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+	<link rel="stylesheet" href="scripts/contextMenu.css">
 
-<script src="scripts/graphConf.js"></script>
-<script src="scripts/graphShapes.js"></script>
-<script src="scripts/infobox.js"></script>
-<script src="scripts/graphOptions.js"></script>
-<script src="scripts/graphData.js"></script>
-<script src="scripts/graph_viz.js"></script>
-<script src="scripts/graphioGremlin.js"></script>
+	<script src="scripts/context-menu.js"></script>
+	<script src="scripts/graphConf.js"></script>
+	<script src="scripts/graphShapes.js"></script>
+	<script src="scripts/infobox.js"></script>
+	<script src="scripts/graphOptions.js"></script>
+	<script src="scripts/graphData.js"></script>
+	<script src="scripts/graph_viz.js"></script>
+	<script src="scripts/graphioGremlin.js"></script>
+	<script src="scripts/contextMenu.js"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
-	///////////////////////////////////////////////
-	function search_query(){
-		graph_data.clear();
-		graphioGremlin.search_query();
-	}
+		///////////////////////////////////////////////
+		function search_query() {
+			graph_data.clear();
+			graphioGremlin.search_query();
+		}
 
-	function get_graph_info(){
-		graphioGremlin.get_graph_info();
-		infobox.show_element("#graphInfo");
-		document.getElementById ("showgraphinfo").checked = true;
-	}
-</script>
-<!-- ------------------------------------------------- -->
+		function get_graph_info() {
+			graphioGremlin.get_graph_info();
+			infobox.show_element("#graphInfo");
+			document.getElementById("showgraphinfo").checked = true;
+		}
+	</script>
+</head>
 
-
-
-	</head>
-	<body>
-		<!--
-		<div class="header">
-			<div class="container">
-				<h1 class="header-heading">Graph Explorer v 0.6</h1>
+<body>
+	<div class="nav-bar">
+		<div class="nav container" id="search_bar">
+			<div class="nav inputs_container_top">
+				<div class="nav input_unit_container">
+					<label for="label_field">Node label:</label>
+					<input name="label_field" id="label_field" value="" />
+				</div>
+				<div class="nav input_unit_container">
+					<label for="search_field">Node property:</label>
+					<input name="search_field" id="search_field" value="" />
+				</div>
+				<div class="nav input_unit_container">
+					<label class="nav input_label" for="search_value">Property value:</label>
+					<input name="search_value" id="search_value" value="" />
+				</div>
+				<div class="nav input_unit_container">
+					<label for="search_type">Type of search:</label>
+					<select name="search_type" id="search_type">
+						<option value="eq">Equals</option>
+						<option value="contains">Contains</option>
+					</select>
+				</div>
+				<div class="nav input_unit_container">
+					<label for="limit_field">Results limit:</label>
+					<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number" />
+				</div>
+			</div>
+			<div class="nav controls">
+				<button name="search query" onclick="search_query();">Search</button>
 			</div>
 		</div>
-		-->
-		<div class="nav-bar">
-			<div class="nav container" id="search_bar">
-				<div class="nav inputs_container_top">
-					<div class="nav input_unit_container">
-						<label for="label_field">Node label:</label>
-						<input name="label_field" id="label_field" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label for="search_field">Node property:</label>
-						<input name="search_field" id="search_field" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="search_value">Property value:</label>
-						<input name="search_value" id="search_value" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label for="search_type">Type of search:</label>
-						<select name="search_type" id="search_type">
-							<option value="eq">Equals</option>
-							<option value="contains">Contains</option>
-						</select>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="limit_field">Results limit:</label>
-						<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number"/>
-					</div>
+		<div class="nav container" id="graph_bar">
+			<div class="nav inputs_container_bottom">
+				<div class="nav input_unit_container">
+					<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
+					<input name="edge_filter" id="edge_filter" value="" />
 				</div>
-				<div class="nav controls">
-					<button name="search query" onclick="search_query();">Search</button>
+				<div class="nav input_unit_container">
+					<label class="nav input_label" for="nbLayers">Nb of layers</label>
+					<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
+				</div>
+				<div class="nav input_unit_container">
+					<input type="checkbox" name="Freeze" id="freeze-in" />
+					<label class="nav input_label" for="freeze-in">Freeze exploration</label>
+				</div>
+				<div class="nav input_unit_container">
+					<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()" />
+					<label class="nav input_label" for="showName">Show labels</label>
 				</div>
 			</div>
-			<div class="nav container" id="graph_bar">
-				<div class="nav inputs_container_bottom">
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
-						<input name="edge_filter" id="edge_filter" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="nbLayers">Nb of layers</label>
-						<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
-					</div>
-					<div class="nav input_unit_container">
-						<input type="checkbox" name="Freeze" id="freeze-in" />
-						<label class="nav input_label" for="freeze-in">Freeze exploration</label>
-					</div>
-					<div class="nav input_unit_container">
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
-						<label class="nav input_label" for="showName">Show labels</label>
-					</div>
-				</div>
-				<div class="nav controls">
-					<button name="clear" onclick="clear_graph()">Clear</button>
-					<button name="cluster" onclick="cluster_graph()">Cluster</button>
-				</div>
+			<div class="nav controls">
+				<button name="clear" onclick="clear_graph()">Clear</button>
+				<button name="cluster" onclick="cluster_graph()">Cluster</button>
 			</div>
 		</div>
+	</div>
+	<div class="menuContainer iw-mTrigger" id="menuContainer">
 		<div class="content">
-				<div class="main" id="main">
-				</div>
+			<div class="main" id="main">
+			</div>
 
-				<div class="aside left_bar" style="background-color:transparent;pointer-events:auto;">
-					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
-						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
-						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
-					</div>
-					<div  id="graphInfo" style="background-color:transparent;pointer-events:none;">	
-					</div>
+			<div class="aside left_bar" style="background-color:transparent;pointer-events:auto;">
+				<div id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
+					<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
+					<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')" />Show/hide graph info
 				</div>
+				<div id="graphInfo" style="background-color:transparent;pointer-events:none;">
+				</div>
+			</div>
 
-				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
-					<div id="messageArea"></div><div id="outputArea"></div>
-					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
-					</div>				
+			<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
+				<div id="messageArea"></div>
+				<div id="outputArea"></div>
+				<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
 				</div>
-				<!--
+			</div>
+			<!--
 				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
 					<center><svg width="100" height="100"></svg></center>
 				</div>
 				-->
 		</div>
-		<div class="footer">
-			<div class="container">
-				<div class="nav inputs_container_top">
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="server_address">Server Address:</label>
-						<input name="server_address" id="server_address" value="localhost" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="server_port">Server port:</label>
-						<input name="server_port" id="server_port" type="number" value="8182"/>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="server_protocol">Protocol:</label>
-						<select name="server_protocol" id="server_protocol">
-							<option value="websocket">websocket</option>
-							<option value="REST">REST</option>
-						</select>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="communication_method">Gremlin version:</label>
-						<select name="communication_method" id="communication_method">
-							<option value="GraphSON3">3.3.*</option>
-							<option value="GraphSON2">3.2.*</option>
-						</select>
-					</div>
+	</div>
+	<div class="footer">
+		<div class="container">
+			<div class="nav inputs_container_top">
+				<div class="nav input_unit_container">
+					<label class="nav input_label" for="server_address">Server Address:</label>
+					<input name="server_address" id="server_address" value="localhost" />
+				</div>
+				<div class="nav input_unit_container">
+					<label class="nav input_label" for="server_port">Server port:</label>
+					<input name="server_port" id="server_port" type="number" value="8182" />
+				</div>
+				<div class="nav input_unit_container">
+					<label for="server_protocol">Protocol:</label>
+					<select name="server_protocol" id="server_protocol">
+						<option value="websocket">websocket</option>
+						<option value="REST">REST</option>
+					</select>
+				</div>
+				<div class="nav input_unit_container">
+					<label for="communication_method">Gremlin version:</label>
+					<select name="communication_method" id="communication_method">
+						<option value="GraphSON3">3.3.*</option>
+						<option value="GraphSON2">3.2.*</option>
+					</select>
+				</div>
 			</div>
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
-			</div>
+			<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
 		</div>
-		<!-- INITIALIZATION -->
-		<script type="text/javascript">
+	</div>
+	<!-- INITIALIZATION -->
+	<script type="text/javascript">
 
-			init_property_bar();
-			graph_data.init();
-			// Create the graph canvas in the chosen div element
-			graph_viz.init("main");
-			// Add the zoom layer to the graph
-			//var svg_graph = 
-			// graph_viz.addzoom();
-			//graph_viz.layers.set_nb_layers(4);
+		init_property_bar();
+		graph_data.init();
+		// Create the graph canvas in the chosen div element
+		graph_viz.init("main");
+		// Add the zoom layer to the graph
+		//var svg_graph = 
+		// graph_viz.addzoom();
+		//graph_viz.layers.set_nb_layers(4);
 
-			// Create the info box for node details
-			infobox.create("#graphInfo","#nodeInfo"); // from module in infobox.js
+		// Create the info box for node details
+		infobox.create("#graphInfo", "#nodeInfo"); // from module in infobox.js
 
-			//console.log(graph_viz.graph_events.ev);
-			//graph_viz.graph_events.test();
+		//console.log(graph_viz.graph_events.ev);
+		//graph_viz.graph_events.test();
 
-			// dependency injection
-			graphioGremlin.init(graph_viz.refresh_data);
+		// dependency injection
+		graphioGremlin.init(graph_viz.refresh_data);
 
+		function clear_graph() {
+			console.log("clear");
+			graph_data.clear();
+			graph_viz.clear();
+		}
 
-	function clear_graph() {
-		console.log("clear");
-		graph_data.clear();
-		graph_viz.clear();
-	}
+		function cluster_graph() {
+			graph_viz.cluster();
+		}
 
-	function cluster_graph() {
-		graph_viz.cluster();
-	}
+		function init_property_bar() {
+			document.getElementById('nbLayers').value = default_nb_of_layers;
+		}
 
-	function init_property_bar(){
-		document.getElementById('nbLayers').value = default_nb_of_layers;
-	}
+		function change_nav_bar(node_data, edge_data) {
+			var nav_bar = d3.select("#prop_choice");
+			nav_bar.select("input").remove();
+			nav_bar.select("select").remove();
+			//nav_choices = nav_bar.append("ul");
+			//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
+			var select = d3.select('#prop_choice')
+				.append('select').attr('class', 'select').attr('id', 'search_field')
 
-	function change_nav_bar(node_data,edge_data){
-		var nav_bar = d3.select("#prop_choice");
-		nav_bar.select("input").remove();
-		nav_bar.select("select").remove();
-		//nav_choices = nav_bar.append("ul");
-		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
-		var select = d3.select('#prop_choice')
-			.append('select').attr('class','select').attr('id','search_field')
-		
-		var select_node = select.append('optgroup').attr('label','Nodes')
+			var select_node = select.append('optgroup').attr('label', 'Nodes')
 			//.on('change',onchange)
 
-		var select_edge = select.append('optgroup').attr('label','Edges')
+			var select_edge = select.append('optgroup').attr('label', 'Edges')
 
-		var node_options = select_node
-			.selectAll('option')
-			.data(node_data).enter()
-			.append('option')
-			.text(function (d) { return d; });
+			var node_options = select_node
+				.selectAll('option')
+				.data(node_data).enter()
+				.append('option')
+				.text(function (d) { return d; });
 
-		var edge_options = select_edge
-			.selectAll('option')
-			.data(edge_data).enter()
-			.append('option')
-			.text(function (d) { return d; });
+			var edge_options = select_edge
+				.selectAll('option')
+				.data(edge_data).enter()
+				.append('option')
+				.text(function (d) { return d; });
 
-	}
+		}
 
-	function display_properties_bar(prop_list,item,text){
-		var nav_bar = d3.select("#graphInfoBar");
-		nav_bar.select("#property_bar_"+item).remove();
-		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
-		property_bar.append('text').text(text).style("font-weight","bold");
-		//d3.select('#property_bar').append('text').text('hello')
-		var property_label = property_bar.selectAll('input').append("ul")
-			.data(prop_list).enter().append("li");
+		function display_properties_bar(prop_list, item, text) {
+			var nav_bar = d3.select("#graphInfoBar");
+			nav_bar.select("#property_bar_" + item).remove();
+			var property_bar = nav_bar.append("div").attr("id", "property_bar_" + item);
+			property_bar.append('text').text(text).style("font-weight", "bold");
+			//d3.select('#property_bar').append('text').text('hello')
+			var property_label = property_bar.selectAll('input').append("ul")
+				.data(prop_list).enter().append("li");
 			//.append('label');
 
-			
-		property_label.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
-			.attr('id_nb',function (d) { return prop_list.indexOf(d); })
-			//.attr('onchange',function(d){display_prop(d);});
-			.attr('onchange','display_prop(this)');
 
-		property_label.append('label').text(function (d) { return d; });
-		
+			property_label.append('input').attr('type', 'checkbox').attr('id', function (d) { return item + "_" + d; })
+				.attr('id_nb', function (d) { return prop_list.indexOf(d); })
+				//.attr('onchange',function(d){display_prop(d);});
+				.attr('onchange', 'display_prop(this)');
 
-	}
+			property_label.append('label').text(function (d) { return d; });
 
-	function display_color_choice(prop_list,item,text){
-		prop_list = ['none','label'].concat(prop_list);
-		var nav_bar = d3.select("#graphInfoBar");
-		nav_bar.select("#color_choice_"+item).remove();
-		var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
-		color_bar.append("div").append("text").text(text).style("font-weight","bold");
-		color_bar.append("div").append("select").attr("class","select").attr("id","color_select_"+item)
-			.attr("onchange","colorize(this)")
-			.selectAll("option")
-			.data(prop_list).enter()
-			.append("option")
-			.text(function (d) { return d; });
-	}
 
-	function colorize(selection){
-		var value = selection.value;
-		console.log('Color by '+value);
-		graphShapes.colorize(value);
+		}
 
-	}
+		function display_color_choice(prop_list, item, text) {
+			prop_list = ['none', 'label'].concat(prop_list);
+			var nav_bar = d3.select("#graphInfoBar");
+			nav_bar.select("#color_choice_" + item).remove();
+			var color_bar = nav_bar.append("div").attr("id", "color_choice_" + item);
+			color_bar.append("div").append("text").text(text).style("font-weight", "bold");
+			color_bar.append("div").append("select").attr("class", "select").attr("id", "color_select_" + item)
+				.attr("onchange", "colorize(this)")
+				.selectAll("option")
+				.data(prop_list).enter()
+				.append("option")
+				.text(function (d) { return d; });
+		}
 
-	function display_prop(prop){
-		var prop_id = prop.id;
-		var prop_id_nb = prop.getAttribute('id_nb');
-		var text_base_offset = 10;
-		var text_offset = 10;
-		var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
-		var item = prop_id.slice(0,prop_id.indexOf("_"));
-		console.log(prop_id,item)		
-		if(d3.select("#"+prop_id).property("checked")){
-			if (item=='nodes'){
-				var elements_text = d3.selectAll('.node');
-			} else if (item=='edges'){
-				var elements_text = d3.selectAll('.edgelabel');
+		function colorize(selection) {
+			var value = selection.value;
+			console.log('Color by ' + value);
+			graphShapes.colorize(value);
+
+		}
+
+		function display_prop(prop) {
+			var prop_id = prop.id;
+			var prop_id_nb = prop.getAttribute('id_nb');
+			var text_base_offset = 10;
+			var text_offset = 10;
+			var prop_name = prop_id.slice(prop_id.indexOf("_") + 1);
+			var item = prop_id.slice(0, prop_id.indexOf("_"));
+			console.log(prop_id, item)
+			if (d3.select("#" + prop_id).property("checked")) {
+				if (item == 'nodes') {
+					var elements_text = d3.selectAll('.node');
+				} else if (item == 'edges') {
+					var elements_text = d3.selectAll('.edgelabel');
+				}
+				attach_property(elements_text, prop_name, prop_id_nb, item)
 			}
-			attach_property(elements_text,prop_name,prop_id_nb,item)
-		}
-		else{
-			if (item=='nodes'){
-				d3.selectAll('.node').select('.'+prop_id).remove();
+			else {
+				if (item == 'nodes') {
+					d3.selectAll('.node').select('.' + prop_id).remove();
+				}
+				else if (item == 'edges') {
+					d3.selectAll('.edgelabel').select('.' + prop_id).remove();
+				}
+
 			}
-			else if (item=='edges'){
-				d3.selectAll('.edgelabel').select('.'+prop_id).remove();
+		}
+
+
+		function attach_property(graph_objects, prop_name, prop_id_nb, item) {
+			var text_base_offset = 10;
+			var text_offset = 10;
+			var prop_id = item + "_" + prop_name;
+			if (item == 'nodes') {
+				elements_text = graph_objects.append("text").style("pointer-events", "none");
 			}
-
-		}
-	}
-
-
-	function attach_property(graph_objects,prop_name,prop_id_nb,item){
-		var text_base_offset = 10;
-		var text_offset = 10;
-		var prop_id = item+"_"+prop_name;
-		if (item=='nodes'){
-			elements_text = graph_objects.append("text").style("pointer-events", "none");
-		}
-		else if (item=='edges'){
-			var elements_text = graph_objects.append("textPath")
-			.attr('class','edge_text')
-			.attr('href', function (d, i) {return '#edgepath' + d.id})
-			.style("text-anchor", "middle")
-			.style("pointer-events", "none")
-			.attr("startOffset", "70%");
-			//.text(function (d) {return d.label});
-			prop_id_nb = prop_id_nb + 1;
-		}
-		else { 
-			console.log('Bad item name.'); return 1;
-		}
-		elements_text.classed("prop_details",true).classed(prop_id,true)
-	  		//.attr("x", 12)
-	  		.attr("dy",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*parseInt(prop_id_nb);})
-	  		//.attr("y", ".31em")
-			.text(function(d){return get_prop_value(d,prop_name,item);});
+			else if (item == 'edges') {
+				var elements_text = graph_objects.append("textPath")
+					.attr('class', 'edge_text')
+					.attr('href', function (d, i) { return '#edgepath' + d.id })
+					.style("text-anchor", "middle")
+					.style("pointer-events", "none")
+					.attr("startOffset", "70%");
+				//.text(function (d) {return d.label});
+				prop_id_nb = prop_id_nb + 1;
+			}
+			else {
+				console.log('Bad item name.'); return 1;
+			}
+			elements_text.classed("prop_details", true).classed(prop_id, true)
+				//.attr("x", 12)
+				.attr("dy", function (d) { return graphShapes.node_size(d) + text_base_offset + text_offset * parseInt(prop_id_nb); })
+				//.attr("y", ".31em")
+				.text(function (d) { return get_prop_value(d, prop_name, item); });
 		}
 
 
-	function get_prop_value(d,prop_name,item){
-		//let COMMUNICATION_METHOD = $('#communication_method').val();
-		if (prop_name in d.properties){
-			if (item=='nodes'){
-				if ('summary' in d.properties[prop_name]) {
-					return d.properties[prop_name]['summary'];
-				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
-					return d.properties[prop_name][0].value;
+		function get_prop_value(d, prop_name, item) {
+			//let COMMUNICATION_METHOD = $('#communication_method').val();
+			if (prop_name in d.properties) {
+				if (item == 'nodes') {
+					if ('summary' in d.properties[prop_name]) {
+						return d.properties[prop_name]['summary'];
+					} else if (COMMUNICATION_METHOD == 'GraphSON1') {
+						return d.properties[prop_name][0].value;
+					}
+				}
+				else if (item == 'edges') {
+					//console.log(d.properties[prop_name])
+					return d.properties[prop_name];
 				}
 			}
-			else if (item=='edges'){
-				//console.log(d.properties[prop_name])
-				return d.properties[prop_name];
+			else {
+				return "";
 			}
 		}
-		else {
-			return "";
+
+
+		function set_nb_layers() {
+			var nb_layers = parseInt(document.getElementById('nbLayers').value);
+			//var nb_layers = parseInt(layer_input.getAttribute("value"));
+			console.log(nb_layers)
+			graph_viz.layers.set_nb_layers(nb_layers);
+
 		}
-	}
+
+		function show_hide_element(element_label) {
+			element = d3.select(element_label);
+			var input = document.getElementById("showgraphinfo");
+			var isChecked = input.checked;
+			if (isChecked) element.style("display", "inline");
+			else { element.style("display", "none"); }
+		}
 
 
-	function set_nb_layers(){
-		var nb_layers = parseInt(document.getElementById('nbLayers').value);
-		//var nb_layers = parseInt(layer_input.getAttribute("value"));
-		console.log(nb_layers)
-		graph_viz.layers.set_nb_layers(nb_layers);
+	</script>
 
-	}
+</body>
 
-	function show_hide_element(element_label){
-		element = d3.select(element_label);
-		var input = document.getElementById ("showgraphinfo");
-		var isChecked = input.checked;
-		if (isChecked) element.style("display", "inline");
-		else {element.style("display", "none");}
-	}
-
-
-		</script>
-
-	</body>
 </html>

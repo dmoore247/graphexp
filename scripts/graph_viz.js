@@ -46,15 +46,88 @@ var graph_viz = (function () {
 	}
 
 	function status(message) {
-		$('#messageArea').html("<h3>"+message+"</h3>");
+		$('#messageArea').html("<h3>" + message + "</h3>");
 	}
 
-	function cluster() {
-		if (_netvisual) {
-			_netvisual.clusterByHubsize();
+	var menu = [{
+		name: 'lineage',
+		//			img: 'images/create.png',
+		title: 'Entire Lineage',
+		fun: function (data, e) {
+			console.log('Entire Lineage');
+			console.log(data);
+			console.log(e);
+			var nodes = _netvisual.getSelectedNodes();
+			console.log(nodes);
+		}
+	}, {
+		name: 'neighbors',
+		title: 'Display Neighbors',
+		fun: function () {
+			showNeighbors(_netvisual.getSelectedNodes());
+		}
+	}, {
+		name: 'cluster',
+		title: 'Cluster descendents',
+		fun: function () {
+			var nodes = _netvisual.getSelectedNodes();
+			clusterByNodeId(nodes);
+		}
+	}, {
+		name: 'uncluster',
+		title: 'Uncluster cluster',
+		fun: function (data, e) {
+			var nodes = _netvisual.getSelectedNodes();
+			unClusterByNodeId(nodes);
+		}
+	}, {
+		name: 'hide',
+		title: 'Hide node from view',
+		fun: function () {
+			console.log('Hide');
+		}
+	}
+	];
+
+	// install context menu
+	function init_context_menus() {
+		console.log("initializing menu");
+
+		// install context menu to override browser menu
+		$('.menuContainer').contextMenu(menu, { triggerOn: 'contextmenu' });
+	}
+
+	function showNeighbors(nodes) {
+		console.log("Show Neighbors");
+		if (nodes.length > 0) {
+			_netvisual.storePositions();
+			graphioGremlin.click_query({ id: nodes[0] });
 		}
 	}
 
+	// cluster entire network
+	function cluster() {
+		if (_netvisual) {
+			_netvisual.clusterByHubsize();
+			_netvisual.clusterOutliers();
+		}
+	}
+	
+	function clusterByNodeId(nodes) {
+		console.log("Cluster");
+		if (nodes.length > 0) {
+//			_netvisual.storePositions();
+			_netvisual.clusterByConnection(nodes[0]);
+		}
+	}
+
+	function unClusterByNodeId(nodes) {
+		console.log("unCluster");
+		if (nodes.length > 0) {
+//			_netvisual.storePositions();
+			_netvisual.openCluster(nodes[0]);
+		}
+	}
 
 	//////////////////////////////////////////////////////////////
 	var layers = (function () {
@@ -199,15 +272,15 @@ var graph_viz = (function () {
 		const text_property = "text";
 
 		console.log(d);
-		graph_data.update( {
-			nodes: d.nodes.map(v => ({ 
+		graph_data.update({
+			nodes: d.nodes.map(v => ({
 				id: v.id,      	// vertex id
 				group: v.label, // vertex shape or icon
 				// text label
 				label: (v.properties[label_property]) ? v.properties[label_property][0].value : v.properties[label_property2][0].value,
 				properties: v.properties
 			})),
-			edges: d.edges.map(e => ({id: e.id, from:e.source, to:e.target, properties: e.properties, arrows:'to', label:e.label}))
+			edges: d.edges.map(e => ({ id: e.id, from: e.source, to: e.target, properties: e.properties, arrows: 'to', label: e.label }))
 		});
 
 		// map graph data set edges to internal edges.
@@ -217,16 +290,21 @@ var graph_viz = (function () {
 		console.log(_label, containerIO, dataIO, graph_options);
 		if (jQuery.isEmptyObject(_netvisual)) {
 			status("New drawing");
+			init_context_menus();
 			_netvisual = new vis.Network(containerIO, dataIO, graph_options);
 			_netvisual.on("selectNode", function (params) {
-				infobox.display_info(graph_data.node(params.nodes[0]));
+				if (params.nodes.length > 0 && params.nodes[0] && !_netvisual.isCluster(params.nodes[0])) {
+					infobox.display_info(graph_data.node(params.nodes[0]));	
+				}
 			});
+			/*
+			// removing this makes nodes more selectable with larger 
 			_netvisual.on("selectEdge", function (params) {
 				infobox.display_info(graph_data.edge(params.edges[0]));
 			});
+			*/
 			_netvisual.on("doubleClick", function (params) {
-				_netvisual.storePositions();
-				graphioGremlin.click_query({id:params.nodes[0]});
+				showNeighbors(params.nodes);
 			});
 			_netvisual.on("startStabilizing", function (params) {
 				console.log("startStabilizing");
@@ -239,6 +317,8 @@ var graph_viz = (function () {
 			status("");
 		}
 	}
+
+	
 
 	function get_node_edges(node_id) {
 		// Return the in and out edges of node with id 'node_id'

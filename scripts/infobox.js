@@ -98,9 +98,10 @@ var infobox = (function(){
 	}
 
 	function display_info(node_data){
-		// remove previous info		
-		_display_IDinfo(node_data)
-		_display_DBinfo(node_data);
+		if (node_data) {
+			_display_IDinfo(node_data);
+			_display_DBinfo(node_data);
+		}
 	}
 
 	//////////////////////

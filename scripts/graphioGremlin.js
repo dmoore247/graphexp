@@ -155,6 +155,7 @@ var graphioGremlin = (function(){
 			 !isNaN(parseInt(value, 10));
 	}
 	function click_query(d) {
+		console.log(d);
 		var edge_filter = $('#edge_filter').val();
 		// Gremlin query
 		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
