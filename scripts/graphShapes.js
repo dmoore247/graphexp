@@ -39,7 +39,7 @@ var graphShapes = (function(){
 				return color_palette(node_code_color(d.label));	
 			}
 			else if (typeof d.properties[colored_prop] !=="undefined"){
-				if (COMMUNICATION_METHOD == 'GraphSON3'){
+				if ('summary' in d.properties[colored_prop]){
 					return color_palette(node_code_color(d.properties[colored_prop]['summary']));
 				}else {
 					return color_palette(node_code_color(d.properties[colored_prop][0].value));
@@ -185,7 +185,7 @@ var graphShapes = (function(){
 			.attr("ID",function(d) { return d.id;});
 	 
 
-		graph_viz.create_arrows(edges_deco);
+		//graph_viz.create_arrows(edges_deco);
 		// Attach the arrows
 		edges_deco.attr("marker-end", function(d) {return "url(#marker_" + d.id + ")"})
 		.attr('stroke-width', edge_stroke_width)

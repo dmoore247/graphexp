@@ -15,9 +15,21 @@
 
 <script src="http://d3js.org/d3.v4.min.js"></script>
 <!--<script src="d3/d3.min.js"></script>-->
+
+<!-- vsjs.org network with font based icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<!-- 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+-->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+
 <script src="scripts/graphConf.js"></script>
 <script src="scripts/graphShapes.js"></script>
 <script src="scripts/infobox.js"></script>
+<script src="scripts/graphOptions.js"></script>
+<script src="scripts/graphData.js"></script>
 <script src="scripts/graph_viz.js"></script>
 <script src="scripts/graphioGremlin.js"></script>
 
@@ -25,7 +37,7 @@
 
 	///////////////////////////////////////////////
 	function search_query(){
-		//if (typeof graph_viz.simulation!=='undefined') {graph_viz.simulation.stop(); console.log('Simulation stopped!');}
+		graph_data.clear();
 		graphioGremlin.search_query();
 	}
 
@@ -49,31 +61,66 @@
 		</div>
 		-->
 		<div class="nav-bar">
-			<div class="container" id="nav_bar">
-				<ul class="nav">
-					<li>
-						Enter a field: <span id="prop_choice"><input name="search_field" id="search_field" value="" /></span>
-					</li>
-					<li>
-						Enter a Keyword/value: <input name="search_value" id="search_value" value="" />
-					</li>
-					<li><button name="search query" onclick="search_query();">Search</button></li>
-					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
-					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
-					<li>
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show labels
-					</li>
-					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
-					</li>
-				</ul>
+			<div class="nav container" id="search_bar">
+				<div class="nav inputs_container_top">
+					<div class="nav input_unit_container">
+						<label for="label_field">Node label:</label>
+						<input name="label_field" id="label_field" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label for="search_field">Node property:</label>
+						<input name="search_field" id="search_field" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="search_value">Property value:</label>
+						<input name="search_value" id="search_value" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label for="search_type">Type of search:</label>
+						<select name="search_type" id="search_type">
+							<option value="eq">Equals</option>
+							<option value="contains">Contains</option>
+						</select>
+					</div>
+					<div class="nav input_unit_container">
+						<label for="limit_field">Results limit:</label>
+						<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number"/>
+					</div>
+				</div>
+				<div class="nav controls">
+					<button name="search query" onclick="search_query();">Search</button>
+				</div>
+			</div>
+			<div class="nav container" id="graph_bar">
+				<div class="nav inputs_container_bottom">
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
+						<input name="edge_filter" id="edge_filter" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="nbLayers">Nb of layers</label>
+						<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
+					</div>
+					<div class="nav input_unit_container">
+						<input type="checkbox" name="Freeze" id="freeze-in" />
+						<label class="nav input_label" for="freeze-in">Freeze exploration</label>
+					</div>
+					<div class="nav input_unit_container">
+						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
+						<label class="nav input_label" for="showName">Show labels</label>
+					</div>
+				</div>
+				<div class="nav controls">
+					<button name="clear" onclick="clear_graph()">Clear</button>
+					<button name="cluster" onclick="cluster_graph()">Cluster</button>
+				</div>
 			</div>
 		</div>
 		<div class="content">
 				<div class="main" id="main">
-					<svg></svg>
 				</div>
 
-				<div class="aside left_bar" style="background-color:transparent;pointer-events:none;">
+				<div class="aside left_bar" style="background-color:transparent;pointer-events:auto;">
 					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
 						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
 						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
@@ -82,7 +129,7 @@
 					</div>
 				</div>
 
-				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:none;">
+				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
 					<div id="messageArea"></div><div id="outputArea"></div>
 					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
 					</div>				
@@ -95,18 +142,43 @@
 		</div>
 		<div class="footer">
 			<div class="container">
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
+				<div class="nav inputs_container_top">
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="server_address">Server Address:</label>
+						<input name="server_address" id="server_address" value="localhost" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="server_port">Server port:</label>
+						<input name="server_port" id="server_port" type="number" value="8182"/>
+					</div>
+					<div class="nav input_unit_container">
+						<label for="server_protocol">Protocol:</label>
+						<select name="server_protocol" id="server_protocol">
+							<option value="websocket">websocket</option>
+							<option value="REST">REST</option>
+						</select>
+					</div>
+					<div class="nav input_unit_container">
+						<label for="communication_method">Gremlin version:</label>
+						<select name="communication_method" id="communication_method">
+							<option value="GraphSON3">3.3.*</option>
+							<option value="GraphSON2">3.2.*</option>
+						</select>
+					</div>
+			</div>
+				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
 			</div>
 		</div>
 		<!-- INITIALIZATION -->
 		<script type="text/javascript">
 
 			init_property_bar();
+			graph_data.init();
 			// Create the graph canvas in the chosen div element
-			graph_viz.init("#main");
+			graph_viz.init("main");
 			// Add the zoom layer to the graph
 			//var svg_graph = 
-			graph_viz.addzoom();
+			// graph_viz.addzoom();
 			//graph_viz.layers.set_nb_layers(4);
 
 			// Create the info box for node details
@@ -115,6 +187,19 @@
 			//console.log(graph_viz.graph_events.ev);
 			//graph_viz.graph_events.test();
 
+			// dependency injection
+			graphioGremlin.init(graph_viz.refresh_data);
+
+
+	function clear_graph() {
+		console.log("clear");
+		graph_data.clear();
+		graph_viz.clear();
+	}
+
+	function cluster_graph() {
+		graph_viz.cluster();
+	}
 
 	function init_property_bar(){
 		document.getElementById('nbLayers').value = default_nb_of_layers;
@@ -185,7 +270,7 @@
 
 	function colorize(selection){
 		var value = selection.value;
-		console.log(value);
+		console.log('Color by '+value);
 		graphShapes.colorize(value);
 
 	}
@@ -247,16 +332,17 @@
 
 
 	function get_prop_value(d,prop_name,item){
+		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
 			if (item=='nodes'){
-				if (COMMUNICATION_METHOD == 'GraphSON3') {
+				if ('summary' in d.properties[prop_name]) {
 					return d.properties[prop_name]['summary'];
 				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
 					return d.properties[prop_name][0].value;
 				}
 			}
 			else if (item=='edges'){
-				console.log(d.properties[prop_name])
+				//console.log(d.properties[prop_name])
 				return d.properties[prop_name];
 			}
 		}

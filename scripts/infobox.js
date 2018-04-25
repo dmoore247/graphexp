@@ -129,8 +129,9 @@ var infobox = (function(){
 		else {
 		 	for (var key in d.properties){
 		 		var new_info_row = info_table.append("tr");
-	 			new_info_row.append("td").text(key);
-	 			new_info_row.append("td").text(d.properties[key]);
+				new_info_row.append("td").text(key);
+				console.log(d.properties[key]); 
+	 			new_info_row.append("td").text(d.properties[key].summary);
 	 			new_info_row.append("td").text("")
 			}
 		}
@@ -138,6 +139,10 @@ var infobox = (function(){
 
 	function _display_vertex_properties(key,value,info_table) {
  		for (var subkey in value){
+			// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
+			if (subkey === "summary") {
+				continue;
+			}
  			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
  				for (var subsubkey in value[subkey].properties){
  					var new_info_row = info_table.append("tr");

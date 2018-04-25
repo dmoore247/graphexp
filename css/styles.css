@@ -70,15 +70,13 @@ a:focus { color: black; }
 a:hover { color: green; }
 a:active { color: red; }
 
+input[type="number"] {
+   width:50px;
+}
+
 /* -----------------------
 Layout styles
 ------------------------*/
-
-.container
-{
-	padding: 1em 1.25em;
-	margin: 0 auto;
-}
 
 .header
 {
@@ -94,6 +92,45 @@ Layout styles
 	color: #ddd;
 	background: #000;
 	padding: 0;
+}
+
+.container
+{
+	padding: 1em 1.25em;
+	margin: 0 auto;
+}
+
+.nav.container {
+	display: grid;
+	grid-template-rows: auto 15%;
+}
+
+.nav.inputs_container_top {
+	grid-row: 1 / 2;
+	display: grid;
+	grid-template-columns: auto auto auto auto auto;
+	grid-auto-flow: row;
+}
+
+.nav.inputs_container_bottom {
+	grid-row: 1 / 2;
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-auto-flow: row;
+}
+.nav.input_unit_container {
+	padding: 5px;
+	align-self: center;
+}
+
+.nav.input_label {
+	white-space:nowrap;
+}
+
+.nav.controls {
+	grid-row: 1 / span 3;
+	justify-self: center;
+	align-self: center;
 }
 
 .content
@@ -130,6 +167,7 @@ Layout styles
 	position: absolute;
 	right: 0;
 	margin-right: 1em;
+	max-width: 25%;
 }
 
 .footer
