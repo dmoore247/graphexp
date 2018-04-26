@@ -106,24 +106,11 @@ var graph_viz = (function () {
 		}
 	}
 
-	function refresh_data(d, query_type) {
+	function refresh(event, properties, senderId) {
 
 		status("redrawing");
-		var label_property = "name";
-		var label_property2 = "type";
-		const text_property = "text";
 
-		// console.log(d);
-		graph_data.update({
-			nodes: d.nodes.map(v => ({
-				id: v.id,      	// vertex id
-				group: v.label, // vertex shape or icon
-				// text label
-				label: (v.properties[label_property]) ? v.properties[label_property][0].value : v.properties[label_property2][0].value,
-				properties: v.properties
-			})),
-			edges: d.edges.map(e => ({ id: e.id, from: e.source, to: e.target, properties: e.properties, arrows: 'to', label: e.label }))
-		});
+		var d = graph_data.data;
 
 		// map graph data set edges to internal edges.
 		var dataIO = graph_data.data();
@@ -134,7 +121,7 @@ var graph_viz = (function () {
 			_netvisual = new vis.Network(containerIO, dataIO, graph_options);
 			_netvisual.on("selectNode", function (params) {
 				if (params.nodes.length > 0 && params.nodes[0] && !_netvisual.isCluster(params.nodes[0])) {
-					infobox.display_info(graph_data.node(params.nodes[0]));
+					infobox.display_info(graph_data.graphNode(params.nodes[0]));
 				}
 			});
 			/*
@@ -162,7 +149,7 @@ var graph_viz = (function () {
 		init: init,
 		clear: clear,
 		status: status,
-		refresh_data: refresh_data,
+		refresh: refresh,
 		cluster: cluster
 	};
 
