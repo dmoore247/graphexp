@@ -176,7 +176,8 @@
 		//graph_viz.graph_events.test();
 
 		// dependency injection
-		graphioGremlin.init(graph_viz.refresh_data);
+		graphioGremlin.init(graph_data.refresh_data);
+		graph_data.subscribe(graph_viz.refresh);
 
 		function clear_graph() {
 			console.log("clear");

@@ -124,7 +124,7 @@ var graphioGremlin = (function () {
 		}
 		let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
-		console.log(gremlin_query);
+		console.log('gremlin_query', gremlin_query);
 
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
@@ -386,7 +386,7 @@ var graphioGremlin = (function () {
 		} else {
 			//console.log(data);
 			var graph = arrange_data(data);
-			console.log(graph)
+			console.log('graph', graph)
 			_referesh_data_function(graph, query_type);
 		}
 

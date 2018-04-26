@@ -18,7 +18,7 @@ limitations under the License.
 
 var graph_data = (function () {
 	"use strict";
-	
+
 	var options = {};
 	var _nodes = {};
 	var _edges = {};
@@ -49,6 +49,16 @@ var graph_data = (function () {
 		return _nodes.get(id);
 	}
 
+	// return graphio version of node
+	function graphNode(id) {
+		var v = node(id);
+		return {
+			id: v.id,
+			label: v.group,
+			properties: v.properties
+		};
+	}
+
 	function edge(id) {
 		// return edge by id
 		return _edges.get(id);
@@ -58,13 +68,39 @@ var graph_data = (function () {
 		return { nodes: _nodes, edges: _edges };
 	}
 
+	// take in graph data, convert to visjs.Network data structure
+	function refresh_data(d) {
+		const label_property = "name";
+		const label_property2 = "type";
+		const text_property = "text";
+
+		console.log('refresh_data', d);
+		_nodes.update(d.nodes.map(v => ({
+			id: v.id,      	// vertex id
+			group: v.label, // vertex shape or icon
+			// text label
+			label: (v.properties[label_property]) ? v.properties[label_property][0].value : v.properties[label_property2][0].value,
+			properties: v.properties
+		})));
+		_edges.update(d.edges.map(e => ({ id: e.id, from: e.source, to: e.target, properties: e.properties, arrows: 'to', label: e.label })));
+	}
+
+	// Last one in wins?
+	function subscribe(fun) {
+		//console.log('subscribe', fun);
+		_edges.on('*', fun);
+	}
+
 	return {
 		init: init, 	// initialize collections
 		clear: clear, 	// clear the data set
 		update: update, // accept { nodes: Array(), edges: Array() }
+		refresh_data: refresh_data, // accept graph data
 		data: data, 	// return { nodes: Array(), edges: Array() }
 		node: node,		// return { <node object> }
+		graphNode: graphNode,  // return graphio version of node
 		edge: edge,		// return { <edge object> }
+		subscribe: subscribe // subscribe to data updates
 	};
 
 })();
